@@ -23,4 +23,5 @@ from scrapy import cmdline
 #os.system("scrapy crawl wallStreetJson")
 #time.sleep(300)
 #os.system("scrapy crawl sougou1")
-cmdline.execute("scrapy crawl szhd".split())
+#cmdline.execute("scrapy crawl zxtw".split())
+cmdline.execute("scrapy crawl sjshdydfhd".split())
