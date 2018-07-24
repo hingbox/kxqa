@@ -11,8 +11,8 @@ class QaPipeline(object):
     def __init__(self):
         self.count = 1
         self.dbpool = adbapi.ConnectionPool("MySQLdb",
-                                           #host="118.25.35.43",
-                                           #port="3306",
+                                           #host="118.89.101.95",
+                                           #port="306,
                                            db = "finance",      # 数据库名
                                            user = "root",       # 数据库用户名
                                            passwd = "root",     # 密码
@@ -28,7 +28,7 @@ class QaPipeline(object):
 
     def _conditional_insert(self, tb, item):
         self.count = self.count + 1
-        tb.execute("insert into t_request (uuid,nick_name,pub_date,content,source,stock,code,qa,create_date) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",\
+        tb.execute("insert into t_qa (uuid,nick_name,pub_date,content,source,stock,code,qa,create_date) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",\
             (item["uuid"],item["nick_name"],\
             item["pub_date"],item["content"],\
             item["source"],item['stock'],\

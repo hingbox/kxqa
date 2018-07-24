@@ -34,7 +34,7 @@ class zxtwSpiders(scrapy.Spider):
     name = "zxtw"
     def start_requests(self):
         pages = []
-        for i in range(1,2):#1,201
+        for i in range(1,100):#1,201
             url = 'http://sns.sseinfo.com/ajax/feeds.do?type=10&show=1&pageSize=100&lastid=-1&page='+str(i)
             page = scrapy.Request(url)
             pages.append(page)
@@ -68,95 +68,78 @@ class zxtwSpiders(scrapy.Spider):
             '''
             if pub_date is not None:
                 #匹配是否有前
-                temp = pub_date.decode('utf8')
-                findword = u"(前+)"
-                pattern = re.compile(findword)
-                results = pattern.findall(temp)
-                if len(results):#有值
-                   for result in results:
-                       if result is not None:
-                          temp = pub_date.decode('utf8')
-                          findword=u"(小时+)"
-                          pattern = re.compile(findword)
-                          results = pattern.findall(temp)
-                          for result in results:
-                              if result is not None:
-                                pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
-                                item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-                              else:
-                                pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
-                                item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-                       else:
-                         pub_temp = pub_date.replace('月', '-').replace('日', '')
-                         item['pub_date'] = '2018-'+pub_temp
+                tempbefore = pub_date.decode('utf8')
+                findwordbefore = u"(前+)"
+                patternbefore = re.compile(findwordbefore)
+                resultsbefores = patternbefore.findall(tempbefore)
+                if len(resultsbefores):#有值
+                   # for resultsbefore in resultsbefores:
+                   #  if resultsbefore is not None:
+                    temp = pub_date.decode('utf8')
+                    findwordshours = u"(小时+)"
+                    patternhours = re.compile(findwordshours)
+                    resulthours = patternhours.findall(temp)
+                    if len(resulthours):
+                        pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+                    # else:
+                    #      pub_temp = pub_date.replace('月', '-').replace('日', '')
+                    #      item['pub_date'] = '2018-'+pub_temp
                 else:
-                    pub_temp = pub_date.replace('月', '-').replace('日', '')
-                    item['pub_date'] = '2018-'+pub_temp
-
-
-                # temp = re.search(r'^(.*)前', pub_date)
-
+                    #昨天
+                    tempyestoday = pub_date.decode('utf8')
+                    findwordsyestoday = u"(昨天+)"
+                    patternyestodays = re.compile(findwordsyestoday)
+                    resultyestodays = patternyestodays.findall(tempyestoday)
+                    if len(resultyestodays):
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(12))).strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        pub_temp = pub_date.replace('月', '-').replace('日', '')
+                        item['pub_date'] = '2018-'+pub_temp
             else:
                 item['pub_date'] = None
             # if pub_date is not None:
             #     #匹配是否有前
-            #
             #     temp = pub_date.decode('utf8')
-            #     findword=u"(前+)"
+            #     findword = u"(前+)"
             #     pattern = re.compile(findword)
             #     results = pattern.findall(temp)
-            #     for result in results:
-            #         if result is not None:
-            #             temp = pub_date.decode('utf8')
-            #             findword=u"(小时+)"
-            #             pattern = re.compile(findword)
-            #             results = pattern.findall(temp)
-            #             for result in results:
-            #                 if result is not None:
+            #     if len(results):#有值
+            #        for result in results:
+            #            if result is not None:
+            #               temp = pub_date.decode('utf8')
+            #               findword=u"(小时+)"
+            #               pattern = re.compile(findword)
+            #               results = pattern.findall(temp)
+            #               for result in results:
+            #                   if result is not None:
             #                     pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
             #                     item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-            #                 else:
+            #                   else:
             #                     pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
             #                     item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-            #         else:
-            #             pub_temp = pub_date.replace('月', '-').replace('日', '')
-            #             item['pub_date'] = '2018-'+pub_temp
+            #            else:
+            #              pub_temp = pub_date.replace('月', '-').replace('日', '')
+            #              item['pub_date'] = '2018-'+pub_temp
+            #     else:
+            #         pub_temp = pub_date.replace('月', '-').replace('日', '')
+            #         item['pub_date'] = '2018-'+pub_temp
+            #
             #
             #     # temp = re.search(r'^(.*)前', pub_date)
             #
             # else:
             #     item['pub_date'] = None
+
             item['create_date'] = now_date.get_now_time()
             #print ('===',type(content))
             item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, content.decode('utf-8').encode('gbk'))
-
+            #item['uuid'] = None
             #print('nick_name',nick_name,'stock',stock,'code',code,'content',content,'pub_date',pub_date)
             yield item
-            # # item['sourcecategory'] = get_url_by_name.get_type_from_url(response.url)
-            # # s = re.search("../(.*)",orgurl)
-            # # if s:
-            # #     s = s.group(1)
-            # #     # print ('pubdate',pubdate,'title',title,'orgurl',static_url+s)
-            # #     item['orgurl'] = self.static_url+s
-            # request = scrapy.Request(orgurl, callback=self.parse_item)
-            # request.meta['item'] = item
-            # yield request
-    def parse_item(self,response):
-        item = response.meta['item']
-        data = response.xpath('//div[@id="layer216"]')
-        content_str = data.xpath('string(.)').extract_first()
-        item['content'] = removetnr(str_to_strip(content_str))
-        source_str = response.xpath('//span[@class="xt2 yh fl"]/text()').extract_first()
-        # item['source'] = str_to_strip(source_str)
-        item['source'] = removetnr(str_to_strip(response.xpath('//span[@class="xt2 yh fl"]/text()').extract_first()))
-        item['sourcecategory'] = '云南要闻'
-        item['source_from'] = '云南网'
-        item['type'] = None
-        item['writer'] = removetnr(str_to_strip(response.xpath('//div[@class="fr"]/text()').extract_first()))
-        # item['summary'] = None
-        item['create_date'] = now_date.get_now_time()
-        item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, response.url)
-        yield item
 
 
 
@@ -169,9 +152,9 @@ class zxdftwSpiders(scrapy.Spider):
     name = "zxdftw"
     def start_requests(self):
         pages = []
-        for i in range(1,2):#1,201
+        for i in range(1,100):#1,450
             #url = 'http://sns.sseinfo.com/ajax/feeds.do?type=11&pageSize=10&lastid=-1&show=1&page='+str(i)
-            url = 'http://sns.sseinfo.com/ajax/feeds.do?&type=11&pageSize=10&lastid=-1&show=1&page='+str(i)
+            url = 'http://sns.sseinfo.com/ajax/feeds.do?&type=11&pageSize=100&lastid=-1&show=1&page='+str(i)
             page = scrapy.Request(url)
             pages.append(page)
         return pages
@@ -198,45 +181,82 @@ class zxdftwSpiders(scrapy.Spider):
             pub_date = div_list.xpath('./div[@class="m_feed_detail m_qa_detail"]/div[@class="m_feed_cnt "]/div[@class="m_feed_func"]/div[@class="m_feed_from"]/span/text()').extract_first()
             '''
             这个地方需要对时间进行处理
-            1.分钟
+            1.分钟 当前时间减去分钟
             2.小时 如果是小时 就用当时时间减去 当前小时数
-            3.天
+            3.天 就处理数据格式
             '''
             if pub_date is not None:
                 #匹配是否有前
-                temp = pub_date.decode('utf8')
-                findword = u"(前+)"
-                pattern = re.compile(findword)
-                results = pattern.findall(temp)
-                if len(results):#有值
-                   for result in results:
-                       if result is not None:
-                          temp = pub_date.decode('utf8')
-                          findword=u"(小时+)"
-                          pattern = re.compile(findword)
-                          results = pattern.findall(temp)
-                          for result in results:
-                              if result is not None:
-                                pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
-                                item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-                              else:
-                                pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
-                                item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-                       else:
-                         pub_temp = pub_date.replace('月', '-').replace('日', '')
-                         item['pub_date'] = '2018-'+pub_temp
+                tempbefore = pub_date.decode('utf8')
+                findwordbefore = u"(前+)"
+                patternbefore = re.compile(findwordbefore)
+                resultsbefores = patternbefore.findall(tempbefore)
+                if len(resultsbefores):#有值
+                   # for resultsbefore in resultsbefores:
+                   #  if resultsbefore is not None:
+                    temp = pub_date.decode('utf8')
+                    findwordshours = u"(小时+)"
+                    patternhours = re.compile(findwordshours)
+                    resulthours = patternhours.findall(temp)
+                    if len(resulthours):
+                        pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+                    # else:
+                    #      pub_temp = pub_date.replace('月', '-').replace('日', '')
+                    #      item['pub_date'] = '2018-'+pub_temp
                 else:
-                    pub_temp = pub_date.replace('月', '-').replace('日', '')
-                    item['pub_date'] = '2018-'+pub_temp
-
-
-                # temp = re.search(r'^(.*)前', pub_date)
-
+                    #昨天
+                    tempyestoday = pub_date.decode('utf8')
+                    findwordsyestoday = u"(昨天+)"
+                    patternyestodays = re.compile(findwordsyestoday)
+                    resultyestodays = patternyestodays.findall(tempyestoday)
+                    if len(resultyestodays):
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        pub_temp = pub_date.replace('月', '-').replace('日', '')
+                        item['pub_date'] = '2018-'+pub_temp
             else:
                 item['pub_date'] = None
+            # if pub_date is not None:
+            #     #匹配是否有前
+            #     temp = pub_date.decode('utf8')
+            #     findword = u"(前+)"
+            #     pattern = re.compile(findword)
+            #     results = pattern.findall(temp)
+            #     if len(results):#有值
+            #        for result in results:
+            #            if result is not None:
+            #               temp = pub_date.decode('utf8')
+            #               findword=u"(小时+)"
+            #               pattern = re.compile(findword)
+            #               results = pattern.findall(temp)
+            #               for result in results:
+            #                   if result is not None:
+            #                     pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+            #                     item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+            #                   else:
+            #                     pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+            #                     item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+            #            else:
+            #              pub_temp = pub_date.replace('月', '-').replace('日', '')
+            #              item['pub_date'] = '2018-'+pub_temp
+            #     else:
+            #         pub_temp = pub_date.replace('月', '-').replace('日', '')
+            #         item['pub_date'] = '2018-'+pub_temp
+            #
+            #
+            #     # temp = re.search(r'^(.*)前', pub_date)
+            #
+            # else:
+            #     item['pub_date'] = None
             item['create_date'] = now_date.get_now_time()
             #print ('===',type(content))
+            #item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, content.decode('utf-8').encode('gbk'))
             item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, content.decode('utf-8').encode('gbk'))
+            #item['uuid'] = None
             #print('nick_name',nick_name,'stock',stock,'code',code,'content',content,'pub_date',pub_date)
             yield item
 
@@ -249,12 +269,12 @@ class zxdftwSpiders(scrapy.Spider):
 '''
 class zxdfhdSpiders(scrapy.Spider):
     def __init__(self):
-        self.static_url = 'http://finance.youth.cn/'
+        self.static_url = 'http://sns.sseinfo.com/'
     name = "zxdfhd"
     def start_requests(self):
         pages = []
-        for i in range(1,2):#1,201
-            url =  url = 'http://sns.sseinfo.com/ajax/feeds.do?&type=11&pageSize=10&lastid=-1&show=1&page='+str(i)
+        for i in range(1,100):#1,201
+            url = 'http://sns.sseinfo.com/ajax/feeds.do?&type=11&pageSize=100&lastid=-1&show=1&page='+str(i)
             page = scrapy.Request(url)
             pages.append(page)
         return pages
@@ -264,8 +284,17 @@ class zxdfhdSpiders(scrapy.Spider):
         div_lists = response.xpath('//div[@class="m_feed_item"]')
         for div_list in div_lists:
             item = QaItem()
-            item['nick_name'] = div_list.xpath('./div[@class="m_feed_detail m_qa"]/div[@class="m_feed_face"]/a/@title').extract_first()
+            item['nick_name'] = div_list.xpath('./div[@class="m_feed_detail m_qa_detail"]/div[@class="m_feed_face"]/a/@title').extract_first()
+            #item['nick_name'] = div_list.xpath('./div[@class="m_feed_detail m_qa"]/div[@class="m_feed_face"]/a/@title').extract_first()
             item['source'] = 'sh'
+            #得到股票代码
+            stock = div_list.xpath('./div[@class="m_feed_detail m_qa_detail"]/div[@class="m_feed_cnt "]/div[@class="m_feed_txt"]/a/text()').extract_first()
+            if stock is not None:
+                item['stock'] = stock.replace(':', '').split('(')[0]
+                item['code'] = stock.replace(':', '').split('(')[1].replace(')', '')
+            else:
+                item['stock'] = None
+                item['code'] = None
             # stock = div_list.xpath('./div[@class="m_feed_detail m_qa"]/div[@class="m_feed_cnt"]/div[@class="m_feed_txt"]/a/text()').extract_first()
             # if stock is not None:
             #     item['stock'] = stock.replace(':', '').split('(')[0]
@@ -273,8 +302,6 @@ class zxdfhdSpiders(scrapy.Spider):
             # else:
             #     item['stock'] = None
             #     item['code'] = None
-            item['stock'] = None
-            item['code'] = None
             data = div_list.xpath('./div[@class="m_feed_detail m_qa"]/div[@class="m_feed_cnt"]/div[@class="m_feed_txt"]')
             content_str = data.xpath('string(.)').extract_first()
             content = removetnr(str_to_strip(content_str))
@@ -289,30 +316,37 @@ class zxdfhdSpiders(scrapy.Spider):
             '''
             if pub_date is not None:
                 #匹配是否有前
-                temp = pub_date.decode('utf8')
-                findword = u"(前+)"
-                pattern = re.compile(findword)
-                results = pattern.findall(temp)
-                if len(results):#有值
-                   for result in results:
-                       if result is not None:
-                          temp = pub_date.decode('utf8')
-                          findword=u"(小时+)"
-                          pattern = re.compile(findword)
-                          results = pattern.findall(temp)
-                          for result in results:
-                              if result is not None:
-                                pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
-                                item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-                              else:
-                                pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
-                                item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
-                       else:
-                         pub_temp = pub_date.replace('月', '-').replace('日', '')
-                         item['pub_date'] = '2018-'+pub_temp
+                tempbefore = pub_date.decode('utf8')
+                findwordbefore = u"(前+)"
+                patternbefore = re.compile(findwordbefore)
+                resultsbefores = patternbefore.findall(tempbefore)
+                if len(resultsbefores):#有值
+                   # for resultsbefore in resultsbefores:
+                   #  if resultsbefore is not None:
+                    temp = pub_date.decode('utf8')
+                    findwordshours = u"(小时+)"
+                    patternhours = re.compile(findwordshours)
+                    resulthours = patternhours.findall(temp)
+                    if len(resulthours):
+                        pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+                    # else:
+                    #      pub_temp = pub_date.replace('月', '-').replace('日', '')
+                    #      item['pub_date'] = '2018-'+pub_temp
                 else:
-                    pub_temp = pub_date.replace('月', '-').replace('日', '')
-                    item['pub_date'] = '2018-'+pub_temp
+                    #昨天
+                    tempyestoday = pub_date.decode('utf8')
+                    findwordsyestoday = u"(昨天+)"
+                    patternyestodays = re.compile(findwordsyestoday)
+                    resultyestodays = patternyestodays.findall(tempyestoday)
+                    if len(resultyestodays):
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        pub_temp = pub_date.replace('月', '-').replace('日', '')
+                        item['pub_date'] = '2018-'+pub_temp
             else:
                 item['pub_date'] = None
             item['create_date'] = now_date.get_now_time()
@@ -323,22 +357,35 @@ class zxdfhdSpiders(scrapy.Spider):
 
 
 
-
+def get_date_range(start, end, step=1, format_string="%Y-%m-%d"):
+        strptime, strftime = datetime.datetime.strptime, datetime.datetime.strftime
+        days = (strptime(end, format_string) - strptime(start, format_string)).days
+        return [strftime(strptime(start, format_string) + datetime.timedelta(i), format_string) for i in xrange(0, days, step)]
 '''
 深交所互动易提问
 '''
 class sjshdytwSpiders(scrapy.Spider):
     def __init__(self):
-        self.static_url = 'http://finance.youth.cn/'
+        self.static_url = 'http://irm.cninfo.com.cn/szse/index.html'
     name = "sjshdytw"
     def start_requests(self):
         pages = []
-        for i in range(1,5):#1,201
-            url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-            page = scrapy.Request(url)
-            pages.append(page)
+        date_list = get_date_range('2018-01-23','2018-07-23',1)
+        for d in date_list:
+            for i in range(1,100):#1,201
+                url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+                page = scrapy.Request(url)
+                pages.append(page)
         return pages
         print ('pages', pages)
+    # def start_requests(self):
+    #     pages = []
+    #     for i in range(1,2):#1,201
+    #         url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom=2018-07-22&condition.dateTo=2018-07-22&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+    #         page = scrapy.Request(url)
+    #         pages.append(page)
+    #     return pages
+    #     print ('pages', pages)
 
     def parse(self, response):
         div_lists = response.xpath('//ul[@class="Tl talkList2"]/li')
@@ -416,12 +463,22 @@ class sjshdydftwSpiders(scrapy.Spider):
     name = "sjshdydftw"
     def start_requests(self):
         pages = []
-        for i in range(1,5):#1,201
-            url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-            page = scrapy.Request(url)
-            pages.append(page)
+        date_list = get_date_range('2018-01-23','2018-07-23',1)
+        for d in date_list:
+            for i in range(1,100):#1,201
+                url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+                page = scrapy.Request(url)
+                pages.append(page)
         return pages
         print ('pages', pages)
+    # def start_requests(self):
+    #     pages = []
+    #     for i in range(1,2):#1,201
+    #         url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+    #         page = scrapy.Request(url)
+    #         pages.append(page)
+    #     return pages
+    #     print ('pages', pages)
 
     def parse(self, response):
         div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="askBoxOuter clear"]')
@@ -443,7 +500,7 @@ class sjshdydftwSpiders(scrapy.Spider):
             content = removetnr(str_to_strip(content_str))
             item['content'] = content
             item['qa'] = 0
-            pub_date = div_list.xpath('./div[@class="msgBox"]/div[@class="pubInfo"]/text()').extract_first()
+            pub_date = div_list.xpath('./div[@class="msgBox"]/div[@class="pubInfo"]/a/text()').extract_first()
             if pub_date is not None:
                 item['pub_date'] = pub_date.replace('年', '-').replace('月', '-').replace('日', '')
             else:
@@ -498,18 +555,28 @@ class sjshdydfhdSpiders(scrapy.Spider):
     name = "sjshdydfhd"
     def start_requests(self):
         pages = []
-        for i in range(1,5):#1,201
-            url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-            page = scrapy.Request(url)
-            pages.append(page)
+        date_list = get_date_range('2018-01-23','2018-07-23',1)
+        for d in date_list:
+            for i in range(1,100):#1,100
+                url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+                page = scrapy.Request(url)
+                pages.append(page)
         return pages
         print ('pages', pages)
+    # def start_requests(self):
+    #     pages = []
+    #     for i in range(1,2):#1,201
+    #         url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+    #         page = scrapy.Request(url)
+    #         pages.append(page)
+    #     return pages
+    #     print ('pages', pages)
 
     def parse(self, response):
         div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="answerBoxOuter clear"]')
         for div_list in div_lists:
             item = QaItem()
-            item['nick_name'] = div_list.xpath('./div[@class="userPic"]/span[@class="comName"]/a/text()').extract_first()
+            item['nick_name'] = div_list.xpath('./div[@class="answerBox"]/div[@class="msgCnt gray666"]/a[@class="blue2"]/text()').extract_first()
             item['source'] = 'sz'
             stock = div_list.xpath('./div[@class="userPic"]/span[@class="comName"]/a/text()').extract_first()
             code = div_list.xpath('./div[@class="userPic"]/span[@class="comCode"]/a/text()').extract_first()
@@ -573,6 +640,84 @@ class sjshdydfhdSpiders(scrapy.Spider):
             yield item
 
 
+
+'''
+demo
+'''
+class demoSpiders(scrapy.Spider):
+    def __init__(self):
+        self.static_url = 'http://finance.youth.cn/'
+    name = "demo"
+    def start_requests(self):
+        pages = []
+        for i in range(1,5):#1,201
+            url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+            page = scrapy.Request(url)
+            pages.append(page)
+        return pages
+        print ('pages', pages)
+
+    def parse(self, response):
+        div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="answerBoxOuter clear"]')
+        for div_list in div_lists:
+            item = QaItem()
+            item['nick_name'] = 'kk'
+            item['source'] = 'sz'
+            stock = '1'
+            code = '2'
+            if stock is not None:
+                item['stock'] = stock
+                item['code'] = code
+            else:
+                item['stock'] = None
+                item['code'] = None
+            # item['stock'] = None
+            # item['code'] = None
+            data = div_list.xpath('./div[@class="answerBox"]/div[@class="msgCnt gray666"]/a[@class="cntcolor"]')
+            content_str = data.xpath('string(.)').extract_first()
+            content = removetnr(str_to_strip(content_str))
+            item['content'] = 'haha'
+            item['qa'] = 1
+            item['pub_date'] = None
+            '''
+            这个地方需要对时间进行处理
+            1.分钟
+            2.小时 如果是小时 就用当时时间减去 当前小时数
+            3.天
+            '''
+            # if pub_date is not None:
+            #     #匹配是否有前
+            #     temp = pub_date.decode('utf8')
+            #     findword = u"(前+)"
+            #     pattern = re.compile(findword)
+            #     results = pattern.findall(temp)
+            #     if len(results):#有值
+            #        for result in results:
+            #            if result is not None:
+            #               temp = pub_date.decode('utf8')
+            #               findword=u"(小时+)"
+            #               pattern = re.compile(findword)
+            #               results = pattern.findall(temp)
+            #               for result in results:
+            #                   if result is not None:
+            #                     pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+            #                     item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(hours=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+            #                   else:
+            #                     pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+            #                     item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(pub_date))).strftime("%Y-%m-%d %H:%M:%S")
+            #            else:
+            #              pub_temp = pub_date.replace('月', '-').replace('日', '')
+            #              item['pub_date'] = '2018-'+pub_temp
+            #     else:
+            #         pub_temp = pub_date.replace('月', '-').replace('日', '')
+            #         item['pub_date'] = '2018-'+pub_temp
+            # else:
+            #     item['pub_date'] = None
+            item['create_date'] = now_date.get_now_time()
+            #print ('===',type(content))
+            item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, content.decode('utf-8').encode('gbk'))
+            #print('nick_name',nick_name,'stock',stock,'code',code,'content',content,'pub_date',pub_date)
+            yield item
 
 
 
