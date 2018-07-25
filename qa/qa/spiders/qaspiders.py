@@ -366,19 +366,19 @@ class sjshdytwSpiders(scrapy.Spider):
     def __init__(self):
         self.static_url = 'http://irm.cninfo.com.cn/szse/index.html'
     name = "sjshdytw"
+    # def start_requests(self):
+    #     pages = []
+    #     date_list = get_date_range('2018-07-24','2018-07-25',1)
+    #     for d in date_list:
+    #         for i in range(1,100):#1,201
+    #             url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+    #             page = scrapy.Request(url)
+    #             pages.append(page)
+    #     return pages
+    #     print ('pages', pages)
     def start_requests(self):
         pages = []
-        # date_list = get_date_range('2018-07-24','2018-07-25',1)
-        # for d in date_list:
-        #     for i in range(1,100):#1,201
-        #         url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-        #         page = scrapy.Request(url)
-        #         pages.append(page)
-        # return pages
-        # print ('pages', pages)
-    def start_requests(self):
-        pages = []
-        current_date =datetime.datetime.now().strftime("%Y-%m-%d")
+        current_date = datetime.datetime.now().strftime("%Y-%m-%d")
         for i in range(1,100):#1,201
             url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+current_date+'&condition.dateTo='+current_date+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
             page = scrapy.Request(url)
