@@ -34,7 +34,7 @@ class zxtwSpiders(scrapy.Spider):
     name = "zxtw"
     def start_requests(self):
         pages = []
-        for i in range(1,100):#1,201
+        for i in range(1,10):#1,201
             url = 'http://sns.sseinfo.com/ajax/feeds.do?type=10&show=1&pageSize=100&lastid=-1&page='+str(i)
             page = scrapy.Request(url)
             pages.append(page)
@@ -152,7 +152,7 @@ class zxdftwSpiders(scrapy.Spider):
     name = "zxdftw"
     def start_requests(self):
         pages = []
-        for i in range(1,100):#1,450
+        for i in range(1,10):#1,450
             #url = 'http://sns.sseinfo.com/ajax/feeds.do?type=11&pageSize=10&lastid=-1&show=1&page='+str(i)
             url = 'http://sns.sseinfo.com/ajax/feeds.do?&type=11&pageSize=100&lastid=-1&show=1&page='+str(i)
             page = scrapy.Request(url)
@@ -262,8 +262,6 @@ class zxdftwSpiders(scrapy.Spider):
 
 
 
-
-
 '''
 上证e互动 最新答复(回答)
 '''
@@ -273,7 +271,7 @@ class zxdfhdSpiders(scrapy.Spider):
     name = "zxdfhd"
     def start_requests(self):
         pages = []
-        for i in range(1,100):#1,201
+        for i in range(1,10):#1,201
             url = 'http://sns.sseinfo.com/ajax/feeds.do?&type=11&pageSize=100&lastid=-1&show=1&page='+str(i)
             page = scrapy.Request(url)
             pages.append(page)
@@ -370,22 +368,23 @@ class sjshdytwSpiders(scrapy.Spider):
     name = "sjshdytw"
     def start_requests(self):
         pages = []
-        date_list = get_date_range('2018-01-23','2018-07-23',1)
-        for d in date_list:
-            for i in range(1,100):#1,201
-                url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-                page = scrapy.Request(url)
-                pages.append(page)
+        # date_list = get_date_range('2018-07-24','2018-07-25',1)
+        # for d in date_list:
+        #     for i in range(1,100):#1,201
+        #         url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+        #         page = scrapy.Request(url)
+        #         pages.append(page)
+        # return pages
+        # print ('pages', pages)
+    def start_requests(self):
+        pages = []
+        current_date =datetime.datetime.now().strftime("%Y-%m-%d")
+        for i in range(1,100):#1,201
+            url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom='+current_date+'&condition.dateTo='+current_date+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+            page = scrapy.Request(url)
+            pages.append(page)
         return pages
         print ('pages', pages)
-    # def start_requests(self):
-    #     pages = []
-    #     for i in range(1,2):#1,201
-    #         url = 'http://irm.cninfo.com.cn/ircs/interaction/topSearchForSzse.do?condition.dateFrom=2018-07-22&condition.dateTo=2018-07-22&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-    #         page = scrapy.Request(url)
-    #         pages.append(page)
-    #     return pages
-    #     print ('pages', pages)
 
     def parse(self, response):
         div_lists = response.xpath('//ul[@class="Tl talkList2"]/li')
@@ -461,24 +460,25 @@ class sjshdydftwSpiders(scrapy.Spider):
     def __init__(self):
         self.static_url = 'http://finance.youth.cn/'
     name = "sjshdydftw"
-    def start_requests(self):
-        pages = []
-        date_list = get_date_range('2018-01-23','2018-07-23',1)
-        for d in date_list:
-            for i in range(1,100):#1,201
-                url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-                page = scrapy.Request(url)
-                pages.append(page)
-        return pages
-        print ('pages', pages)
     # def start_requests(self):
     #     pages = []
-    #     for i in range(1,2):#1,201
-    #         url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-    #         page = scrapy.Request(url)
-    #         pages.append(page)
+    #     date_list = get_date_range('2018-01-23','2018-07-23',1)
+    #     for d in date_list:
+    #         for i in range(1,100):#1,201
+    #             url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+    #             page = scrapy.Request(url)
+    #             pages.append(page)
     #     return pages
     #     print ('pages', pages)
+    def start_requests(self):
+        current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        pages = []
+        for i in range(1,100):#1,201
+            url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+current_date+'&condition.dateTo='+current_date+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+            page = scrapy.Request(url)
+            pages.append(page)
+        return pages
+        print ('pages', pages)
 
     def parse(self, response):
         div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="askBoxOuter clear"]')
@@ -553,24 +553,25 @@ class sjshdydfhdSpiders(scrapy.Spider):
     def __init__(self):
         self.static_url = 'http://finance.youth.cn/'
     name = "sjshdydfhd"
-    def start_requests(self):
-        pages = []
-        date_list = get_date_range('2018-01-23','2018-07-23',1)
-        for d in date_list:
-            for i in range(1,100):#1,100
-                url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-                page = scrapy.Request(url)
-                pages.append(page)
-        return pages
-        print ('pages', pages)
     # def start_requests(self):
     #     pages = []
-    #     for i in range(1,2):#1,201
-    #         url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom=2018-01-23&condition.dateTo=2018-07-23&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
-    #         page = scrapy.Request(url)
-    #         pages.append(page)
+    #     date_list = get_date_range('2018-01-23','2018-07-23',1)
+    #     for d in date_list:
+    #         for i in range(1,100):#1,100
+    #             url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+d+'&condition.dateTo='+d+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+    #             page = scrapy.Request(url)
+    #             pages.append(page)
     #     return pages
     #     print ('pages', pages)
+    def start_requests(self):
+        current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+        pages = []
+        for i in range(1,100):#1,201
+            url = 'http://irm.cninfo.com.cn/ircs/interaction/lastRepliesForSzse.do?condition.dateFrom='+current_date+'&condition.dateTo='+current_date+'&condition.stockcode=&condition.keyWord=&condition.status=-1&condition.searchType=name&condition.questionCla=&condition.questionAtr=&condition.marketType=Z&condition.searchRange=0&condition.questioner=&condition.questionerType=&condition.loginId=&condition.provinceCode=&condition.plate=&pageNo='+str(i)+'&categoryId=&code=&pageSize=10&source=2'
+            page = scrapy.Request(url)
+            pages.append(page)
+        return pages
+        print ('pages', pages)
 
     def parse(self, response):
         div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="answerBoxOuter clear"]')

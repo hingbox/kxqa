@@ -24,4 +24,4 @@ from scrapy import cmdline
 #time.sleep(300)
 #os.system("scrapy crawl sougou1")
 #cmdline.execute("scrapy crawl zxtw".split())
-cmdline.execute("scrapy crawl sjshdydfhd".split())
+cmdline.execute("scrapy crawl zxtw".split())

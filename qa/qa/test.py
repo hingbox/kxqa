@@ -29,16 +29,16 @@ def get_date_range(start, end, step=1, format_string="%Y-%m-%d"):
         strptime, strftime = datetime.datetime.strptime, datetime.datetime.strftime
         days = (strptime(end, format_string) - strptime(start, format_string)).days
         return [strftime(strptime(start, format_string) + datetime.timedelta(i), format_string) for i in xrange(0, days, step)]
-date_list = get_date_range('2018-01-01','2018-01-05',1)
+date_list = get_date_range('2018-01-01','2018-01-02',1)
 pages=[]
 for d in date_list:
     for i in range(1,5):
-        url = 'www'+d+str(i)
+        url = 'www'+d
         pages.append(url)
 #return pages
 print pages
 
-
+print('111',datetime.datetime.now().strftime("%Y-%m-%d"))
 # start_urls = []
 #     for page in range(1, 71):# -- 71
 #         for record in range(1,5):
