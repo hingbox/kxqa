@@ -95,7 +95,7 @@ class zxtwSpiders(scrapy.Spider):
                     patternyestodays = re.compile(findwordsyestoday)
                     resultyestodays = patternyestodays.findall(tempyestoday)
                     if len(resultyestodays):
-                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(12))).strftime("%Y-%m-%d %H:%M:%S")
+                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
                     else:
                         pub_temp = pub_date.replace('月', '-').replace('日', '')
                         item['pub_date'] = '2018-'+pub_temp
