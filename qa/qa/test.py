@@ -37,6 +37,25 @@ for d in date_list:
         pages.append(url)
 #return pages
 print pages
+print('+++++++++++++++++++++++++++++')
+pub_date='昨天 18:01'
+tempyestoday = pub_date.decode('utf8')
+findwordsyestoday = u"(昨天+)"
+patternyestodays = re.compile(findwordsyestoday)
+resultyestodays = patternyestodays.findall(tempyestoday)
+if len(resultyestodays):
+    pub_date = pub_date.replace('昨天 ', '')
+    print (pub_date)
+    #pub_date = re.findall(r"\d+\.?\d*", pub_date)[0]
+    # regex_str = "^.*?([\u4E00-\u9FA5])"
+    # match_obj = re.match(regex_str, pub_date)
+    # if match_obj:
+    #      print(match_obj.group(2))
+    last_date = (datetime.datetime.now()-datetime.timedelta(days=int(1))).strftime("%Y-%m-%d")
+    last_date = last_date+' '+pub_date
+    print ('last_date',last_date)
+
+print ('++++++++++++++++++++++++++++++')
 
 print('111',datetime.datetime.now().strftime("%Y-%m-%d"))
 # start_urls = []

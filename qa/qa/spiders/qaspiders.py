@@ -95,7 +95,10 @@ class zxtwSpiders(scrapy.Spider):
                     patternyestodays = re.compile(findwordsyestoday)
                     resultyestodays = patternyestodays.findall(tempyestoday)
                     if len(resultyestodays):
-                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
+                        pub_dates = tempyestoday.replace('昨天 ', '')
+                        last_date = (datetime.datetime.now()-datetime.timedelta(days=int(1))).strftime("%Y-%m-%d")
+                        item['pub_date'] = last_date+' '+pub_dates
+                        # item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
                     else:
                         pub_temp = pub_date.replace('月', '-').replace('日', '')
                         item['pub_date'] = '2018-'+pub_temp
@@ -214,7 +217,10 @@ class zxdftwSpiders(scrapy.Spider):
                     patternyestodays = re.compile(findwordsyestoday)
                     resultyestodays = patternyestodays.findall(tempyestoday)
                     if len(resultyestodays):
-                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
+                        pub_dates = tempyestoday.replace('昨天 ', '')
+                        last_date = (datetime.datetime.now()-datetime.timedelta(days=int(1))).strftime("%Y-%m-%d")
+                        item['pub_date'] = last_date+' '+pub_dates
+                        #item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
                     else:
                         pub_temp = pub_date.replace('月', '-').replace('日', '')
                         item['pub_date'] = '2018-'+pub_temp
@@ -341,7 +347,10 @@ class zxdfhdSpiders(scrapy.Spider):
                     patternyestodays = re.compile(findwordsyestoday)
                     resultyestodays = patternyestodays.findall(tempyestoday)
                     if len(resultyestodays):
-                        item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
+                        pub_dates = tempyestoday.replace('昨天 ', '')
+                        last_date = (datetime.datetime.now()-datetime.timedelta(days=int(1))).strftime("%Y-%m-%d")
+                        item['pub_date'] = last_date+' '+pub_dates
+                        #item['pub_date'] = (datetime.datetime.now()-datetime.timedelta(minutes=int(24))).strftime("%Y-%m-%d %H:%M:%S")
                     else:
                         pub_temp = pub_date.replace('月', '-').replace('日', '')
                         item['pub_date'] = '2018-'+pub_temp
