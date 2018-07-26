@@ -399,7 +399,8 @@ class sjshdytwSpiders(scrapy.Spider):
         div_lists = response.xpath('//ul[@class="Tl talkList2"]/li')
         for div_list in div_lists:
             item = QaItem()
-            item['nick_name'] = div_list.xpath('./div[@class="ask_Box clear"]/div[@class="userPic"]/a/span/text()').extract_first()
+            nick_name = div_list.xpath('./div[@class="ask_Box clear"]/div[@class="userPic"]/a/span/text()').extract_first()
+            item['nick_name'] = strip_remove_tnr(nick_name)
             item['source'] = 'sz'
             stock = div_list.xpath('./div[@class="ask_Box clear"]/div[@class="msg_Box"]/div[@class="msgCnt gray666"]/div/a[@class="blue2"]/text()').extract_first()
             if stock is not None:
@@ -493,7 +494,8 @@ class sjshdydftwSpiders(scrapy.Spider):
         div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="askBoxOuter clear"]')
         for div_list in div_lists:
             item = QaItem()
-            item['nick_name'] = div_list.xpath('./div[@class="userPic"]/a/span/text()').extract_first()
+            nick_name = div_list.xpath('./div[@class="userPic"]/a/span/text()').extract_first()
+            item['nick_name'] = strip_remove_tnr(nick_name)
             item['source'] = 'sz'
             stock = div_list.xpath('./div[@class="msgBox"]/div[@class="msgCnt gray666"]/div/a[@class="blue2"]/text()').extract_first()
             if stock is not None:
@@ -586,7 +588,8 @@ class sjshdydfhdSpiders(scrapy.Spider):
         div_lists = response.xpath('//div[@class="Tl talkList2"]/div[@class="answerBoxOuter clear"]')
         for div_list in div_lists:
             item = QaItem()
-            item['nick_name'] = div_list.xpath('./div[@class="answerBox"]/div[@class="msgCnt gray666"]/a[@class="blue2"]/text()').extract_first()
+            nick_name = div_list.xpath('./div[@class="answerBox"]/div[@class="msgCnt gray666"]/a[@class="blue2"]/text()').extract_first()
+            item['nick_name'] = strip_remove_tnr(nick_name)
             item['source'] = 'sz'
             stock = div_list.xpath('./div[@class="userPic"]/span[@class="comName"]/a/text()').extract_first()
             code = div_list.xpath('./div[@class="userPic"]/span[@class="comCode"]/a/text()').extract_first()
@@ -780,7 +783,7 @@ def str_to_strip(value):
 def strip_remove_tnr(value):
     if value is not None:
         value = value.strip()
-        return value.replace('\r','').replace('\t','').replace('\n','')
+        return value.replace('\r', '').replace('\t', '').replace('\n', '').replace(' ', '')
     else:
         return None
 
