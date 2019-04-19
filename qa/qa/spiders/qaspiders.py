@@ -741,12 +741,102 @@ class demoSpiders(scrapy.Spider):
 
 
 
+'''
+深交所互动易提问 new 2019-04-18版本
+'''
+class sjhdytwnewSpiders(scrapy.Spider):
+    def __init__(self):
+        self.static_url = 'http://finance.youth.cn/'
+    name = "sjtwnew"
+    def start_requests(self):
+        url = 'http://irm.cninfo.com.cn/ircs/index/search'
+        # FormRequest 是Scrapy发送POST请求的方法
+        for i in range(1,11):
+            data = {
+                "pageNo": str(i), "pageSize":'100', "searchTypes": '11'
+            }
+            yield scrapy.FormRequest(
+                url=url,
+                formdata=data,
+                callback=self.parse_page
+            )
+    '''
+    提问
+      昵称authorName，内容mainContent，股票名称companyShortName，股票代码stockCode，提问日期pubDate，提问0,
+    回答
+      昵称authorName，回复内容attachedContent，回复时间 attachedPubDate，股票名称companyShortName，股票代码stockCode,回答1
+    '''
+    def parse_page(self, response):
+        info = json.loads(response.body.strip())
+        results = info['results']
+        for result in results:
+            item = QaItem()
+            item['nick_name'] = result['authorName']
+            item['source'] = 'sz'
+
+            item['stock'] = result['companyShortName']
+            item['code'] = result['stockCode']
+            item['content'] = result['mainContent']
+            item['qa'] = 0
+            pub_date = now_date.timeStamp(int(result['pubDate'].encode("utf-8")))
+            item['pub_date'] = pub_date
+
+            item['create_date'] = now_date.get_now_time()
+            #print ('===',type(content))
+            item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, item['content'].decode('utf-8').encode('gbk'))
+            #print('nick_name',nick_name,'stock',stock,'code',code,'content',content,'pub_date',pub_date)
+            yield item
 
 
 
 
 
 
+'''
+深交所互动易提问 new 2019-04-18版本
+'''
+class sjhdyhdnewSpiders(scrapy.Spider):
+    def __init__(self):
+        self.static_url = 'http://finance.youth.cn/'
+    name = "sjhdnew"
+    def start_requests(self):
+        url = 'http://irm.cninfo.com.cn/ircs/index/search'
+        # FormRequest 是Scrapy发送POST请求的方法
+        for i in range(1,11):
+            data = {
+                "pageNo": str(i), "pageSize":'100', "searchTypes": '11'
+            }
+            yield scrapy.FormRequest(
+                url=url,
+                formdata=data,
+                callback=self.parse_page
+            )
+    '''
+    提问
+      昵称authorName，内容mainContent，股票名称companyShortName，股票代码stockCode，提问日期pubDate，提问0,
+    回答
+      昵称authorName，回复内容attachedContent，回复时间 attachedPubDate，股票名称companyShortName，股票代码stockCode,回答1
+    '''
+    def parse_page(self, response):
+        info = json.loads(response.body.strip())
+        results = info['results']
+        for result in results:
+            item = QaItem()
+            item['nick_name'] = result['authorName']
+            item['source'] = 'sz'
+
+            item['stock'] = result['companyShortName']
+            item['code'] = result['stockCode']
+            item['content'] = result['attachedContent']
+            item['qa'] = 1
+            pub_date = now_date.timeStamp(int(result['attachedPubDate'].encode("utf-8")))
+            item['pub_date'] = pub_date
+
+            item['create_date'] = now_date.get_now_time()
+            #print ('===',type(content))
+            item['uuid'] = uuid.uuid5(uuid.NAMESPACE_DNS, item['content'].decode('utf-8').encode('gbk'))
+            #print('nick_name',nick_name,'stock',stock,'code',code,'content',content,'pub_date',pub_date)
+            yield item
 
 
 

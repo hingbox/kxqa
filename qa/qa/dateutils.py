@@ -73,15 +73,21 @@ class DateUtils(object):
         strptime, strftime = datetime.datetime.strptime, datetime.datetime.strftime
         days = (strptime(end, format_string) - strptime(start, format_string)).days
         return [strftime(strptime(start, format_string) + datetime.timedelta(i), format_string) for i in xrange(0, days, step)]
-#多加一天
-print (datetime.datetime.now()+datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-# 2018-05-09 16:56:07
-#减一天
-print (datetime.datetime.now()+datetime.timedelta(days=-1)).strftime("%Y-%m-%d %H:%M:%S")
-# 2018-05-07 16:56:59
-#可以把days改为hours minutes，就可以提前XX小时/分钟了。
+    #多加一天
+        print (datetime.datetime.now()+datetime.timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
+    # 2018-05-09 16:56:07
+    #减一天
+        print (datetime.datetime.now()+datetime.timedelta(days=-1)).strftime("%Y-%m-%d %H:%M:%S")
+    # 2018-05-07 16:56:59
+    #可以把days改为hours minutes，就可以提前XX小时/分钟了。
 
-print (datetime.datetime.now()+datetime.timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+        print (datetime.datetime.now()+datetime.timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
+     #13位时间戳转换为日期格式
+     def timeStamp(self,timeNum):
+        timeStamp = float(timeNum/1000)
+        timeArray = time.localtime(timeStamp)
+        otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+        return otherStyleTime
 
 
 

@@ -66,3 +66,17 @@ print('111',datetime.datetime.now().strftime("%Y-%m-%d"))
 
 gaga="         abc";
 print ('\tgaga')
+
+# 使用datetime
+timeStamp = 1555656134
+dateArray = datetime.datetime.utcfromtimestamp(timeStamp)
+otherStyleTime = dateArray.strftime("%Y-%m-%d %H:%M:%S")
+print otherStyleTime   # 2013--10--10 15:40:00
+import time
+def timeStamp(timeNum):
+    timeStamp = float(timeNum/1000)
+    timeArray = time.localtime(timeStamp)
+    otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    print otherStyleTime
+if __name__ == "__main__":
+    timeStamp(1555656134000)
